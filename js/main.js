@@ -36,8 +36,10 @@ async function loadGitHubData() {
 
 /* ===== 多语言 ===== */
 const langs = {
-  en: () => import("../i18n/en.json").then(m => m.default),
-  zh: () => import("../i18n/zh.json").then(m => m.default)
+  en: () =>
+    fetch("i18n/en.json").then(res => res.json()),
+  zh: () =>
+    fetch("i18n/zh.json").then(res => res.json())
 };
 
 async function loadLang(lang) {
