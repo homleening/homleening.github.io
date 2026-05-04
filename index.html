@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>GitHub Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body class="dark-mode">
+  <header class="navbar">
+    <nav>
+      <ul id="menu">
+        <li data-key="menu_overview">Overview</li>
+        <li data-key="menu_repos">Repositories</li>
+        <li data-key="menu_projects">Projects</li>
+      </ul>
+    </nav>
+
+    <div class="controls">
+      <select id="lang-switch">
+        <option value="en">EN</option>
+        <option value="zh">中文</option>
+      </select>
+
+      <button id="theme-toggle">🌙</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- 用户信息 -->
+    <aside class="profile">
+      <img id="avatar" src="" alt="avatar" class="avatar" />
+      <h1 id="username"></h1>
+      <p id="bio"></p>
+    </aside>
+
+    <!-- 仓库列表 -->
+    <section class="repos" id="repos"></section>
+  </main>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

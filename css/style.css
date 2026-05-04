@@ -1,0 +1,79 @@
+:root {
+  --bg: #0d1117;
+  --card: #161b22;
+  --border: #30363d;
+  --text: #c9d1d9;
+  --accent: #58a6ff;
+}
+
+body.light-mode {
+  --bg: #ffffff;
+  --card: #f6f8fa;
+  --border: #d0d7de;
+  --text: #24292e;
+  --accent: #0969da;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* 导航 */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+}
+
+/* 布局 */
+.container {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  max-width: 1100px;
+  margin: 32px auto;
+  padding: 0 24px;
+}
+
+/* 个人信息 */
+.profile {
+  text-align: center;
+}
+
+.avatar {
+  width: 160px;
+  border-radius: 50%;
+}
+
+/* 仓库卡片 */
+.repos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.card h3 {
+  margin: 0;
+  color: var(--accent);
+}
+
+.card p {
+  margin: 8px 0 0;
+  font-size: 14px;
+}
