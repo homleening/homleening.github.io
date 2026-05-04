@@ -77,3 +77,36 @@ body {
   margin: 8px 0 0;
   font-size: 14px;
 }
+
+
+/* 顶部导航栏样式 */
+.navbar {
+    background-color: var(--card-bg); /* 使用暗色主题的卡片背景色 */
+    padding: 15px 30px;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky; /* 让导航栏吸顶 */
+    top: 0;
+    z-index: 1000;
+}
+
+#menu {
+    list-style: none; /* 去掉前面的圆点 */
+    margin: 0;
+    padding: 0;
+    display: flex;    /* 核心魔法：开启弹性布局 */
+    gap: 30px;        /* 菜单项之间的间距 */
+    align-items: center;
+}
+
+#menu li {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+    padding: 5px 0;
+}
+
+/* 鼠标悬停效果 */
+#menu li:hover {
+    color: var(--primary-color); /* 悬停时变成蓝色 */
+}
