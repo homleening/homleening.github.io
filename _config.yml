@@ -1,0 +1,24 @@
+title: 技术笔记
+subtitle: 全栈开发 | .NET | Vue | 自动化
+author: homleening
+language: zh-CN
+timezone: Asia/Shanghai
+
+url: https://homleening.github.io
+root: /
+
+permalink: :year/:month/:day/:title/
+default_layout: post
+
+theme: next
+
+# 分页
+index_generator:
+  per_page: 10
+  order_by: -date
+
+# 部署
+deploy:
+  type: git
+  repo: https://github.com/homleening/homleening.github.io.git
+  branch: main
