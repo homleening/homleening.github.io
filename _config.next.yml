@@ -1,0 +1,67 @@
+scheme: Muse
+
+darkmode: false
+
+menu:
+  home: / || fa fa-home
+  archives: /archives/ || fa fa-archive
+  tags: /tags/ || fa fa-tags
+  categories: /categories/ || fa fa-th
+
+menu_settings:
+  icons: true
+  badges: false
+
+sidebar:
+  position: left
+  display: post
+  padding: 18
+  offset: 12
+
+avatar:
+  url: /images/avatar.gif
+  rounded: false
+  rotated: false
+
+site_state: true
+
+social_icons:
+  enable: true
+  icons_only: false
+  transition: false
+
+footer:
+  icon:
+    name: fa fa-heart
+    animated: false
+    color: "#ff0000"
+  powered: true
+
+post_meta:
+  item_text: true
+  created_at: true
+  updated_at:
+    enable: true
+    another_day: true
+  categories: true
+
+back2top:
+  enable: true
+  sidebar: false
+  scrollpercent: false
+
+codeblock:
+  theme:
+    light: default
+    dark: stackoverflow-dark
+
+font:
+  enable: false
+
+vendors:
+  internal: local
+  plugins: cdnjs
+
+css: css
+js: js
+images: images
