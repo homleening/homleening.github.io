@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -22,10 +24,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Clean and Generate
+      - name: Clean and Build
         run: |
           npx hexo clean
-          npx hexo generate
+          npm run build
 
       - name: Check public directory
         run: |

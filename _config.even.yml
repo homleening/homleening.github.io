@@ -1,0 +1,116 @@
+# ===========================================
+# Site Information Settings
+# ===========================================
+
+# Site creation time
+since: 2025
+
+# Custom your favicon.ico in `site/source`
+favicon: /images/favicon.ico
+
+# Set feed link (false | default | your feed link)
+# false: disable
+# default: use `atom.xml`, generator for `hexo-generator-feed`
+rss: default
+
+# ===========================================
+# Menu Settings
+# ===========================================
+menu:
+  首页: /
+  归档: /archives/
+  标签: /tags/
+  分类: /categories/
+
+# ===========================================
+# Theme Settings
+# ===========================================
+# color: default | mint green | cobalt blue | hot pink | dark violet
+color: default
+
+# default page mode: default | archives
+mode: default
+
+toc: true
+
+# jQuery fancybox
+fancybox: true
+
+# LaTeX support (via MathJax)
+latex: false
+
+copyright:
+  enable: true
+  # https://creativecommons.org/
+  license: '<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>'
+
+reward:
+  enable: false
+  qrCode:
+    wechat:
+    alipay:
+
+# ===========================================
+# Social links Settings
+# ===========================================
+social:
+  github: https://github.com/homleening
+
+# ===========================================
+# Third Party Services Settings
+# ===========================================
+
+# LeanCloud
+leancloud:
+  app_id:
+  app_key:
+  server_url:
+  cdn:
+
+# Baidu Analytics
+baidu_analytics:
+# Baidu Verification
+baidu_verification:
+
+# Baidu push
+baidu_push:
+
+# Google Analytics
+google_analytics:
+# Google Verification
+google_verification:
+
+# Disqus
+disqus_shortname:
+
+#Changyan
+changyan:
+  appid:
+  appkey:
+
+#LiveRe
+livere_datauid:
+
+# Gitalk
+gitalk:
+  enable: false
+  github_id:
+  repo:
+  client_id:
+  client_secret:
+  admin_user:
+  distraction_free_mode: true
+  language:
+
+# utterances
+utterances:
+  enable: false
+  repo:
+  issueTerm: title
+  theme: github-light
+  label: utterances
+
+# ===========================================
+# Version
+# ===========================================
+version: 3.0.0

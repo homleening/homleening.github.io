@@ -1,16 +1,16 @@
-title: 技术笔记
-subtitle: 全栈开发 | .NET | Vue | 自动化
-author: homleening
+title: 甯哥的博客
+subtitle: 全栈开发 | .NET | 个人随想
+author: Homlee
 language: zh-CN
 timezone: Asia/Shanghai
 
 url: https://homleening.github.io
 root: /
 
-permalink: :year/:month/:day/:title/
+permalink: :year/:month/:title/
 default_layout: post
 
-theme: next
+theme: even
 
 # 分页
 index_generator:
