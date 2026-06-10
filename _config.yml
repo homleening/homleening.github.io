@@ -10,7 +10,7 @@ root: /
 permalink: :year/:month/:day/:title/
 default_layout: post
 
-theme: next
+theme: hexo-theme-next
 
 # 分页
 index_generator:

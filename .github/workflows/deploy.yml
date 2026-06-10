@@ -22,8 +22,21 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build static files
-        run: npx hexo generate
+      - name: Clean and Generate
+        run: |
+          npx hexo clean
+          npx hexo generate
+
+      - name: Check public directory
+        run: |
+          echo "=== Checking public directory ==="
+          ls -la public/ || echo "Public directory not found"
+          if [ -d "public" ]; then
+            echo "=== Public CSS files ==="
+            find public -name "*.css" -type f
+            echo "=== Public directory structure ==="
+            find public -type d | head -20
+          fi
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
