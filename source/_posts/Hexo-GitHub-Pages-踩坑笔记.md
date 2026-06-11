@@ -5,7 +5,6 @@ tags: [Hexo, GitHub Pages, CI/CD, GitHub Actions, 踩坑]
 categories: 踩坑笔记
 ---
 
-# Hexo GitHub Pages 踩坑笔记
 
 本文记录我搭建 Hexo 博客过程中遇到的各种坑和解决方案，希望能帮到遇到同样问题的朋友。
 

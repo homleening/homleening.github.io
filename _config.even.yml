@@ -19,8 +19,8 @@ rss: default
 menu:
   首页: /
   归档: /archives/
-  标签: /tags/
   分类: /categories/
+  友链: /friends/
 
 # ===========================================
 # Theme Settings
@@ -47,14 +47,17 @@ copyright:
 reward:
   enable: false
   qrCode:
-    wechat:
-    alipay:
+    wechat: /images/wechat.png
+    alipay: /images/alipay.png
 
 # ===========================================
 # Social links Settings
 # ===========================================
 social:
   github: https://github.com/homleening
+  zhihu: https://zhihu.com/people/homlee-ning
+  facebook: https://www.facebook.com/homlee.ning
+  twitter: https://x.com/homleening
 
 # ===========================================
 # Third Party Services Settings
