@@ -1,11 +1,10 @@
 ---
 layout: post
-title: Hexo 双仓库 GitHub Actions 自动化部署踩坑记录（单独记录）
+title: Hexo 双仓库 GitHub Actions 自动化部署踩坑记录
 date: 2026-06-10 21:06:00
 tags: [Hexo, GitHub Pages, CI/CD, GitHub Actions, NexT, Even]
 categories: 踩坑笔记
 ---
-# Hexo 双仓库 GitHub Actions 自动化部署踩坑记录（403 权限问题）
 
 ## 一、双仓库部署架构说明
 
