@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <!-- Website mata -->
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+<!-- Disable transformation -->
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<!-- Website description -->
+
+
+<!-- Website keywords -->
+
+
+
+
+<!-- Website rss -->
+
+<link rel="alternate" href="/default" title="甯哥的博客" >
+
+
+<!-- Website favicon -->
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=3.0.0" />
+
+
+<!-- Canonical, good for google search engine -->
+<link rel="canonical" href="https://homleening.github.io/" />
+
+<!-- Fancybox styling -->
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+<!-- MathJax (LaTeX) support -->
+
+
+<!-- Theme styling -->
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=3.0.0" />
+
+<!-- Analytics and push -->
+
+
+
+  
+
+
+
+<!-- LeanCloud Counter -->
+
+
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null,"server_url":null,"cdn":null},"toc":true,"fancybox":true,"latex":false};
+</script>
+  
+  <title>甯哥的博客</title>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div class="scrollPercentage"></div>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">甯哥的博客</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+    <a href="/">
+      <li class="mobile-menu-item">
+        
+        
+        首页              </li>
+    </a>
+    
+    <a href="/archives/">
+      <li class="mobile-menu-item">
+        
+        
+        归档              </li>
+    </a>
+    
+    <a href="/categories/">
+      <li class="mobile-menu-item">
+        
+        
+        分类              </li>
+    </a>
+    
+    <a href="/friends/">
+      <li class="mobile-menu-item">
+        
+        
+        友链              </li>
+    </a>
+    
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+      <div class="logo-wrapper">  
+  <a href="/." class="logo">甯哥的博客</a>  
+</div>  
+  
+<nav class="site-navbar">  
+    
+    <ul id="menu" class="menu">  
+        
+        <li class="menu-item">  
+          <a class="menu-item-link" href="/">  
+              
+              
+              首页  
+              
+          </a>  
+        </li>  
+        
+        <li class="menu-item">  
+          <a class="menu-item-link" href="/archives/">  
+              
+              
+              归档  
+              
+          </a>  
+        </li>  
+        
+        <li class="menu-item">  
+          <a class="menu-item-link" href="/categories/">  
+              
+              
+              分类  
+              
+          </a>  
+        </li>  
+        
+        <li class="menu-item">  
+          <a class="menu-item-link" href="/friends/">  
+              
+              
+              友链  
+              
+          </a>  
+        </li>  
+        
+    </ul>  
+    
+</nav>  
+
+    </header>
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <section id="posts" class="posts">
+  
+  
+  
+  <article class="post">
+  <header class="post-header">
+    <h1 class="post-title">
+      
+      <a class="post-link" href="/2026/06/20260511-%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0-Github%E5%8F%8C%E4%BB%93%E5%BA%93%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/">Hexo 双仓库 GitHub Actions 自动化部署踩坑记录</a>
+      
+    </h1>
+
+    <div class="post-meta">
+      <span class="post-time">
+        2026-06-11
+      </span>
+      
+      
+      <span class="post-category">
+        
+        <a href="/categories/%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/">踩坑笔记</a>
+        
+      </span>
+      
+      
+    </div>
+  </header>
+
+  
+
+  <div class="post-content">
+    
+    
+    
+
+    
+    <h2 id="一、双仓库部署架构说明"><a href="#一、双仓库部署架构说明" class="headerlink" title="一、双仓库部署架构说明"></a>一、双仓库部署架构说明</h2><p>早期采用 Hexo 博客经典双仓库 CI&#x2F;CD 架构：</p>
+<ul>
+<li><p><strong>源码仓库</strong>：存放 Hexo 源码、配置、Markdown 文章，日常开发与提交</p>
+</li>
+<li><p><strong>Pages 静态仓库</strong>：<code>用户名.github.io</code> 专属仓库，用于托管最终生成的静态页面、对外提供博客访问服务</p>
+</li>
+</ul>
+<p>期望实现：本地推送源码仓库 <code>main</code> 分支 → GitHub Actions 自动构建静态资源 → 跨仓库自动发布到 Pages 仓库，完成博客更新。</p>
+<h2 id="二、核心问题：跨仓库部署-403-权限拒绝"><a href="#二、核心问题：跨仓库部署-403-权限拒绝" class="headerlink" title="二、核心问题：跨仓库部署 403 权限拒绝"></a>二、核心问题：跨仓库部署 403 权限拒绝</h2><p>配置完成后，流水线持续报错：</p>
+<blockquote>
+<p><code>remote: Permission to xxx.github.io.git denied to github-actions[bot].</code></p>
+<p><code>fatal: unable to access ... The requested URL returned error: 403</code></p>
+</blockquote>
+<p>问题根因：</p>
+<ol>
+<li><p>GitHub 内置的 <code>GITHUB_TOKEN</code><strong>仅对当前仓库有权限</strong>，无法跨仓库推送代码；</p>
+</li>
+<li><p>双仓库模式下，Actions 机器人需要操作另一个独立仓库，直接触发权限拦截，返回 403；</p>
+</li>
+<li><p>即使两个仓库归属同一账号、存在 Fork 关联，<strong>Fork 工作流也无法解决跨仓写入权限问题</strong>，官方安全策略严格限制跨仓库资源写入。</p>
+</li>
+</ol>
+<h2 id="三、双仓库模式衍生痛点"><a href="#三、双仓库模式衍生痛点" class="headerlink" title="三、双仓库模式衍生痛点"></a>三、双仓库模式衍生痛点</h2><h3 id="1-权限配置繁琐、极易出错"><a href="#1-权限配置繁琐、极易出错" class="headerlink" title="1. 权限配置繁琐、极易出错"></a>1. 权限配置繁琐、极易出错</h3><p>必须手动创建永久 PAT 令牌、配置 <code>repo</code> 全量权限、在源码仓库配置 Secrets，步骤冗余。一旦令牌过期、权限缺失、Secret 配置错误，流水线直接挂掉，无兜底机制。</p>
+<h3 id="2-分支保护冲突，部署规则受限"><a href="#2-分支保护冲突，部署规则受限" class="headerlink" title="2. 分支保护冲突，部署规则受限"></a>2. 分支保护冲突，部署规则受限</h3><p>Pages 仓库默认 <code>main</code> 分支受系统保护，禁止同分支覆盖写入。必须额外修改部署分支为 <code>gh-pages</code>，同时同步修改 GitHub Pages 访问分支配置，增加大量适配成本。</p>
+<h3 id="3-故障排查成本高"><a href="#3-故障排查成本高" class="headerlink" title="3. 故障排查成本高"></a>3. 故障排查成本高</h3><p>跨仓库报错模糊，常见 <code>403 权限拒绝</code>、<code>git 128 异常</code>、分支冲突、资源路径404等连锁问题，新手极难定位根因，整体稳定性极差。</p>
+<h2 id="四、最终解决方案：弃用双仓库，改用单仓库部署"><a href="#四、最终解决方案：弃用双仓库，改用单仓库部署" class="headerlink" title="四、最终解决方案：弃用双仓库，改用单仓库部署"></a>四、最终解决方案：弃用双仓库，改用单仓库部署</h2><p>对比踩坑成本后，放弃双仓库架构，切换为<strong>单仓库标准工作流</strong>：</p>
+<ul>
+<li><p>唯一仓库：<code>用户名.github.io</code></p>
+</li>
+<li><p><code>main</code> 分支：存放全部 Hexo 源码、文章、配置（日常迭代提交）</p>
+</li>
+<li><p><code>gh-pages</code> 分支：Actions 自动生成、自动推送静态资源</p>
+</li>
+</ul>
+<p>优势：</p>
+<ol>
+<li><p>无需手动配置 PAT 令牌，内置 <code>GITHUB_TOKEN</code> 完全够用；</p>
+</li>
+<li><p>无跨仓库权限问题，彻底解决 403 报错；</p>
+</li>
+<li><p>流程极简、社区标准、稳定性极高，几乎零运维；</p>
+</li>
+<li><p>分支隔离规范，源码与静态资源互不干扰，无覆盖风险。</p>
+</li>
+</ol>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>Hexo 双仓库自动化部署方案<strong>理论可行，实际落地坑极多</strong>，核心瓶颈为 GitHub 跨仓库权限机制限制，衍生大量配置、权限、分支冲突问题。对于个人博客场景，<strong>单仓库 + main&#x2F;gh-pages 双分支隔离</strong> 是最优、最稳、最省心的 CI&#x2F;CD 方案。</p>
+<blockquote>
+<p>（注：文档部分内容可能由 AI 生成）</p>
+</blockquote>
+
+    
+    
+  </div>
+
+  
+
+  
+
+</article>
+  
+  <article class="post">
+  <header class="post-header">
+    <h1 class="post-title">
+      
+      <a class="post-link" href="/2026/06/20260511-%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0-GitHubPages%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/">Hexo GitHub Pages 踩坑笔记</a>
+      
+    </h1>
+
+    <div class="post-meta">
+      <span class="post-time">
+        2026-06-11
+      </span>
+      
+      
+      <span class="post-category">
+        
+        <a href="/categories/%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/">踩坑笔记</a>
+        
+      </span>
+      
+      
+    </div>
+  </header>
+
+  
+
+  <div class="post-content">
+    
+    
+    
+
+    
+    <p>本文记录我搭建 Hexo 博客过程中遇到的各种坑和解决方案，希望能帮到遇到同样问题的朋友。</p>
+<h2 id="坑-1：Hexo-7-的破坏性更新"><a href="#坑-1：Hexo-7-的破坏性更新" class="headerlink" title="坑 1：Hexo 7 的破坏性更新"></a>坑 1：Hexo 7 的破坏性更新</h2><p>Hexo 7 移除了许多默认依赖，导致构建失败：</p>
+<p><strong>问题表现：</strong></p>
+<ul>
+<li>SCSS 文件无法编译</li>
+<li>EJS 模板显示原始代码</li>
+<li><code>hexo server</code> 命令不存在</li>
+</ul>
+<p><strong>解决方案：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装 SCSS 编译器</span></span><br><span class="line">npm install sass</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装 EJS 渲染器</span></span><br><span class="line">npm install hexo-renderer-ejs</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装开发服务器</span></span><br><span class="line">npm install hexo-server</span><br></pre></td></tr></table></figure>
+
+<h2 id="坑-2：GitHub-Actions-部署权限错误"><a href="#坑-2：GitHub-Actions-部署权限错误" class="headerlink" title="坑 2：GitHub Actions 部署权限错误"></a>坑 2：GitHub Actions 部署权限错误</h2><p><strong>问题表现：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">remote: Permission to xxx/xxx.github.io.git denied to github-actions[bot].</span><br><span class="line">fatal: unable to access &#x27;https://github.com/xxx/xxx.github.io.git/&#x27;: The requested URL returned error: 403</span><br></pre></td></tr></table></figure>
+
+<p><strong>原因：</strong> GitHub Actions 默认的 <code>GITHUB_TOKEN</code> 没有写权限</p>
+<p><strong>解决方案：</strong> 在 workflow 中添加权限配置：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">permissions:</span></span><br><span class="line">  <span class="attr">contents:</span> <span class="string">write</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="坑-3：CSS-文件-404-错误"><a href="#坑-3：CSS-文件-404-错误" class="headerlink" title="坑 3：CSS 文件 404 错误"></a>坑 3：CSS 文件 404 错误</h2><p><strong>问题表现：</strong> 网站打开后样式丢失，浏览器控制台报 <code>main.css: 404</code></p>
+<p><strong>原因：</strong> NexT 主题使用 Stylus 编写样式，需要 Stylus 渲染器</p>
+<p><strong>解决方案：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-renderer-stylus</span><br></pre></td></tr></table></figure>
+
+<h2 id="坑-4：主题切换的坑"><a href="#坑-4：主题切换的坑" class="headerlink" title="坑 4：主题切换的坑"></a>坑 4：主题切换的坑</h2><p>最初我尝试使用 <code>npm install hexo-theme-next</code> 安装主题，但生成的内容没有样式。</p>
+<p><strong>根本原因：</strong> 主题文件没有被正确加载，导致 <code>main.styl</code> 不会被编译。</p>
+<p><strong>最终方案：</strong> 使用 Git Submodule 管理主题</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 初始化主题子模块</span></span><br><span class="line">git submodule add https://github.com/ahonn/hexo-theme-even.git themes/even</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新主题</span></span><br><span class="line"><span class="built_in">cd</span> themes/even</span><br><span class="line">git pull origin master</span><br></pre></td></tr></table></figure>
+
+<p><strong>优势：</strong></p>
+<ul>
+<li>主题独立管理，不污染主仓库</li>
+<li>版本可锁定，避免破坏性更新</li>
+<li>方便后期维护和升级</li>
+</ul>
+<h2 id="坑-5：CI-CD-中-SCSS-编译失败"><a href="#坑-5：CI-CD-中-SCSS-编译失败" class="headerlink" title="坑 5：CI&#x2F;CD 中 SCSS 编译失败"></a>坑 5：CI&#x2F;CD 中 SCSS 编译失败</h2><p><strong>问题表现：</strong> 本地构建正常，GitHub Actions 构建失败</p>
+<p><strong>原因：</strong> 工作流中没有调用 SCSS 编译脚本</p>
+<p><strong>解决方案：</strong></p>
+<ol>
+<li>创建编译脚本 <code>scripts/compile-scss.js</code>：</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> sass = <span class="built_in">require</span>(<span class="string">&#x27;sass&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">compileScss</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> scssPath = <span class="string">&#x27;themes/even/source/css/style.scss&#x27;</span>;</span><br><span class="line">  <span class="keyword">const</span> cssPath = <span class="string">&#x27;themes/even/source/css/style.css&#x27;</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> result = sass.<span class="title function_">compile</span>(scssPath);</span><br><span class="line">  fs.<span class="title function_">writeFileSync</span>(cssPath, result.<span class="property">css</span>);</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;SCSS compiled successfully!&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">compileScss</span>();</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>修改 <code>package.json</code>：</li>
+</ol>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;build&quot;</span><span class="punctuation">:</span> <span class="string">&quot;node scripts/compile-scss.js &amp;&amp; hexo generate&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="坑-6：子模块提交找不到"><a href="#坑-6：子模块提交找不到" class="headerlink" title="坑 6：子模块提交找不到"></a>坑 6：子模块提交找不到</h2><p><strong>问题表现：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Fetched in submodule path &#x27;themes/even&#x27;, but it did not contain xxx. Direct fetching of that commit failed.</span><br></pre></td></tr></table></figure>
+
+<p><strong>原因：</strong> 在子模块中做了修改但没有推送到远程</p>
+<p><strong>教训：</strong> 不要修改第三方主题仓库的代码！</p>
+<h2 id="坑-7：双仓库部署的权限噩梦（血的教训！）"><a href="#坑-7：双仓库部署的权限噩梦（血的教训！）" class="headerlink" title="坑 7：双仓库部署的权限噩梦（血的教训！）"></a>坑 7：双仓库部署的权限噩梦（血的教训！）</h2><p>在采用<strong>同一个仓库、不同分支</strong>的方案之前，我踩过更大的坑——<strong>分两个 GitHub 仓库</strong>部署：</p>
+<ul>
+<li>一个 <strong>private 私有仓库</strong> 存放 Hexo 源码</li>
+<li>一个 <strong>public 公开仓库</strong>（即 <code>homleening.github.io</code>）存放生成的静态文件</li>
+</ul>
+<h3 id="方案设想"><a href="#方案设想" class="headerlink" title="方案设想"></a>方案设想</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">private 仓库 (源码)                    public 仓库 (静态文件)</span><br><span class="line">  main 分支                                main 分支</span><br><span class="line">    ├── source/                              ├── index.html</span><br><span class="line">    ├── themes/                              ├── css/</span><br><span class="line">    └── _config.yml                          └── js/</span><br><span class="line">         │                                          ▲</span><br><span class="line">         │     GitHub Actions 自动部署              │</span><br><span class="line">         └──────────────────────────────────────────┘</span><br><span class="line">              编译生成 → 推送到 public 仓库</span><br></pre></td></tr></table></figure>
+
+<h3 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h3><p><strong>1. 默认 <code>GITHUB_TOKEN</code> 权限不足</strong></p>
+<p>GitHub Actions 默认的 <code>GITHUB_TOKEN</code> <strong>只能作用于当前仓库</strong>，无法推送到其他仓库（无论是 public 还是 private）。</p>
+<p><strong>2. 403 权限错误</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">remote: Permission to homleening/homleening.github.io.git denied to github-actions[bot].</span><br><span class="line">fatal: unable to access &#x27;https://github.com/homleening/homleening.github.io.git/&#x27;: The requested URL returned error: 403</span><br></pre></td></tr></table></figure>
+
+<p><strong>3. Fork 工作流也行不通</strong></p>
+<p>即使是 Fork 关系，跨仓库的自动部署依然受 Token 权限限制。</p>
+<h3 id="尝试过的方案"><a href="#尝试过的方案" class="headerlink" title="尝试过的方案"></a>尝试过的方案</h3><p><strong>方案一：使用 Deploy Key</strong></p>
+<ul>
+<li>为 public 仓库配置 SSH Deploy Key</li>
+<li>在 private 仓库的 Secrets 中添加私钥</li>
+<li><strong>问题</strong>：需要精细管理密钥对，每次更换密钥都麻烦</li>
+<li><strong>问题</strong>：没有 fine-grained 权限控制</li>
+</ul>
+<p><strong>方案二：使用 <code>GITHUB_TOKEN</code> + 手动触发</strong></p>
+<ul>
+<li>不行！<code>GITHUB_TOKEN</code> 跨仓库天然受限</li>
+</ul>
+<p><strong>方案三：创建 Personal Access Token (PAT)</strong></p>
+<ul>
+<li>在 GitHub Settings → Developer settings → Personal access tokens</li>
+<li>勾选 <code>repo</code> 全权限或 <code>public_repo</code> 权限</li>
+<li>将 Token 添加到 private 仓库的 Secrets 中</li>
+<li><strong>最终能工作，但有隐患！</strong></li>
+</ul>
+<h3 id="使用高权限-PAT-的痛点"><a href="#使用高权限-PAT-的痛点" class="headerlink" title="使用高权限 PAT 的痛点"></a>使用高权限 PAT 的痛点</h3><ol>
+<li><p><strong>Token 泄露风险</strong></p>
+<ul>
+<li>一旦 PAT 泄露，攻击者拥有你所有仓库的完全控制权</li>
+<li>日志中如果不小心打印 Token，会永久泄露</li>
+</ul>
+</li>
+<li><p><strong>权限过度授予</strong></p>
+<ul>
+<li>经典 PAT 只能选 <code>repo</code> 全权限</li>
+<li>无法只授予”推送代码到指定仓库”的最小权限</li>
+<li>违背最小权限原则</li>
+</ul>
+</li>
+<li><p><strong>Token 管理复杂</strong></p>
+<ul>
+<li>多个项目需要多个 Token</li>
+<li>定期轮换 Token 很麻烦</li>
+<li>Token 失效后所有部署都会失败</li>
+</ul>
+</li>
+<li><p><strong>审计困难</strong></p>
+<ul>
+<li>不知道是哪个 workflow 在用这个 Token</li>
+<li>出问题难以追踪</li>
+</ul>
+</li>
+</ol>
+<h3 id="顿悟：同仓库不同分支才是最佳实践"><a href="#顿悟：同仓库不同分支才是最佳实践" class="headerlink" title="顿悟：同仓库不同分支才是最佳实践"></a>顿悟：同仓库不同分支才是最佳实践</h3><p><strong>核心思想：</strong> 既然 <code>GITHUB_TOKEN</code> 默认有当前仓库的所有权限，那就<strong>把源代码和静态文件放在同一个仓库</strong>！</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">同一个仓库 (homleening.github.io)</span><br><span class="line">  ├── main 分支（默认分支，存放 Hexo 源码）</span><br><span class="line">  │     ├── source/</span><br><span class="line">  │     ├── themes/</span><br><span class="line">  │     └── _config.yml</span><br><span class="line">  │</span><br><span class="line">  └── gh-pages 分支（自动生成，存放静态文件）</span><br><span class="line">        ├── index.html</span><br><span class="line">        ├── css/</span><br><span class="line">        └── js/</span><br></pre></td></tr></table></figure>
+
+<p><strong>优势：</strong></p>
+<ol>
+<li><strong>零额外配置</strong>：<code>GITHUB_TOKEN</code> 默认就能推送</li>
+<li><strong>零安全风险</strong>：不需要管理 PAT</li>
+<li><strong>零成本</strong>：GitHub Pages 本身免费</li>
+<li><strong>权限最小化</strong>：只需要 <code>contents: write</code> 即可</li>
+<li><strong>审计清晰</strong>：所有操作都在一个仓库内</li>
+</ol>
+<h3 id="经验总结"><a href="#经验总结" class="headerlink" title="经验总结"></a>经验总结</h3><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>安全性</th>
+<th>复杂度</th>
+<th>推荐度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>双仓库 + PAT</td>
+<td>❌ 低（Token 泄露风险）</td>
+<td>❌ 高</td>
+<td>⭐</td>
+</tr>
+<tr>
+<td>双仓库 + Deploy Key</td>
+<td>⚠️ 中</td>
+<td>⚠️ 中</td>
+<td>⭐⭐</td>
+</tr>
+<tr>
+<td><strong>同仓库不同分支</strong></td>
+<td>✅ 高</td>
+<td>✅ 低</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>教训</strong>：能用 GitHub 原生机制解决的，就不要引入额外的安全风险。<strong>同仓库 + 不同分支</strong> 是 GitHub Pages 自动部署的最佳实践！</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>搭建博客的过程虽然充满挑战，但每解决一个问题都是一次成长。希望这篇踩坑笔记能帮到你！</p>
+
+    
+    
+  </div>
+
+  
+
+  
+
+</article>
+  
+  <article class="post">
+  <header class="post-header">
+    <h1 class="post-title">
+      
+      <a class="post-link" href="/2026/05/00000000-%E6%8A%80%E6%9C%AF-%E7%AC%AC%E4%B8%80%E7%AF%87%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2/">我的第一篇自动部署博客</a>
+      
+    </h1>
+
+    <div class="post-meta">
+      <span class="post-time">
+        2026-05-10
+      </span>
+      
+      <span class="post-author">
+        / HomleeNing
+      </span>
+      
+      
+      <span class="post-category">
+        
+        <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+        
+      </span>
+      
+      
+    </div>
+  </header>
+
+  
+
+  <div class="post-content">
+    
+    
+    
+    
+    
+
+    
+    <p>记录我搭建Hexo博客的完整过程。</p>
+    <div class="read-more">
+      <a href="/2026/05/00000000-%E6%8A%80%E6%9C%AF-%E7%AC%AC%E4%B8%80%E7%AF%87%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2/" class="read-more-link">阅读更多</a>
+    </div>
+    
+    
+  </div>
+
+  
+
+  
+
+</article>
+  
+  <article class="post">
+  <header class="post-header">
+    <h1 class="post-title">
+      
+      <a class="post-link" href="/2024/05/2024-05-19-%E6%8A%80%E6%9C%AF-.NET%E5%B9%B3%E5%8F%B0%E4%B8%8B%E9%85%8D%E7%BD%AESerilog%E8%AE%B0%E5%BD%95%E6%97%A5%E5%BF%97/">.NET平台下配置Serilog记录日志</a>
+      
+    </h1>
+
+    <div class="post-meta">
+      <span class="post-time">
+        2024-05-19
+      </span>
+      
+      <span class="post-author">
+        / HomleeNing
+      </span>
+      
+      
+      <span class="post-category">
+        
+        <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+        
+      </span>
+      
+      
+    </div>
+  </header>
+
+  
+
+  <div class="post-content">
+    
+    
+    
+    
+    
+
+    
+    <p>NET Core 配置 Serilog 日志记录完整教程</p>
+    <div class="read-more">
+      <a href="/2024/05/2024-05-19-%E6%8A%80%E6%9C%AF-.NET%E5%B9%B3%E5%8F%B0%E4%B8%8B%E9%85%8D%E7%BD%AESerilog%E8%AE%B0%E5%BD%95%E6%97%A5%E5%BF%97/" class="read-more-link">阅读更多</a>
+    </div>
+    
+    
+  </div>
+
+  
+
+  
+
+</article>
+  
+  <article class="post">
+  <header class="post-header">
+    <h1 class="post-title">
+      
+      <a class="post-link" href="/2019/10/Archive/20191008-%E7%AE%97%E6%B3%95-%E6%98%9F%E6%B2%B3%E6%88%98%E9%98%9F%E9%A2%98%E8%A7%A3/">HDU 1011 Starship Troopers（星河战队）题解</a>
+      
+    </h1>
+
+    <div class="post-meta">
+      <span class="post-time">
+        2019-10-08
+      </span>
+      
+      <span class="post-author">
+        / HomleeNing
+      </span>
+      
+      
+      <span class="post-category">
+        
+        <a href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
+        
+      </span>
+      
+      
+    </div>
+  </header>
+
+  
+
+  <div class="post-content">
+    
+    
+    
+
+    
+    <h1 id="HDU-1011-Starship-Troopers（星河战队）题解"><a href="#HDU-1011-Starship-Troopers（星河战队）题解" class="headerlink" title="HDU 1011 Starship Troopers（星河战队）题解"></a>HDU 1011 Starship Troopers（星河战队）题解</h1><p><strong>题目来源</strong>：HDU <a target="_blank" rel="noopener" href="http://acm.hdu.edu.cn/showproblem.php?pid=1011">http://acm.hdu.edu.cn/showproblem.php?pid=1011</a></p>
+<p><strong>算法类型</strong>：树形DP &#x2F; 树形背包</p>
+<p><strong>通过率</strong>：Total Submission(s): 6816 &nbsp; Accepted Submission(s): 1845</p>
+<h2 id="题目信息"><a href="#题目信息" class="headerlink" title="题目信息"></a>题目信息</h2><p><strong>Time Limit</strong>: 10000&#x2F;5000 MS (Java&#x2F;Others)</p>
+<p><strong>Memory Limit</strong>: 65536&#x2F;32768 K (Java&#x2F;Others)</p>
+<h2 id="Problem-Description"><a href="#Problem-Description" class="headerlink" title="Problem Description"></a>Problem Description</h2><p>You, the leader of Starship Troopers, are sent to destroy a base of the bugs. The base is built underground. It is actually a huge cavern, which consists of many rooms connected with tunnels. Each room is occupied by some bugs, and their brains hide in some of the rooms. Scientists have just developed a new weapon and want to experiment it on some brains. Your task is to destroy the whole base, and capture as many brains as possible.</p>
+<p>To kill all the bugs is always easier than to capture their brains. A map is drawn for you, with all the rooms marked by the amount of bugs inside, and the possibility of containing a brain. The cavern’s structure is like a tree in such a way that there is one unique path leading to each room from the entrance. To finish the battle as soon as possible, you do not want to wait for the troopers to clear a room before advancing to the next one, instead you have to leave some troopers at each room passed to fight all the bugs inside. The troopers never re-enter a room where they have visited before.</p>
+<p>A starship trooper can fight against 20 bugs. Since you do not have enough troopers, you can only take some of the rooms and let the nerve gas do the rest of the job. At the mean time, you should maximize the possibility of capturing a brain. To simplify the problem, just maximize the sum of all the possibilities of containing brains for the taken rooms. Making such a plan is a difficult job. You need the help of a computer.</p>
+<h2 id="Input"><a href="#Input" class="headerlink" title="Input"></a>Input</h2><p>The input contains several test cases. The first line of each test case contains two integers N (0 &lt; N &lt;&#x3D; 100) and M (0 &lt;&#x3D; M &lt;&#x3D; 100), which are the number of rooms in the cavern and the number of starship troopers you have, respectively. The following N lines give the description of the rooms. Each line contains two non-negative integers – the amount of bugs inside and the possibility of containing a brain, respectively. The next N - 1 lines give the description of tunnels. Each tunnel is described by two integers, which are the indices of the two rooms it connects. Rooms are numbered from 1 and room 1 is the entrance to the cavern.</p>
+<p>The last test case is followed by two -1’s.</p>
+<h2 id="Output"><a href="#Output" class="headerlink" title="Output"></a>Output</h2><p>For each test case, print on a single line the maximum sum of all the possibilities of containing brains for the taken rooms.</p>
+<h2 id="Sample-Input"><a href="#Sample-Input" class="headerlink" title="Sample Input"></a>Sample Input</h2><figure class="highlight plaintext"><figcaption><span>Text</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">5 10</span><br><span class="line">50 10</span><br><span class="line">40 10</span><br><span class="line">40 20</span><br><span class="line">65 30</span><br><span class="line">70 30</span><br><span class="line">1 2</span><br><span class="line">1 3</span><br><span class="line">2 4</span><br><span class="line">2 5</span><br><span class="line">1 1</span><br><span class="line">20 7</span><br><span class="line">-1 -1</span><br></pre></td></tr></table></figure>
+
+<h2 id="Sample-Output"><a href="#Sample-Output" class="headerlink" title="Sample Output"></a>Sample Output</h2><figure class="highlight plaintext"><figcaption><span>Text</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">50</span><br><span class="line">7</span><br></pre></td></tr></table></figure>
+
+<h2 id="中文题意描述"><a href="#中文题意描述" class="headerlink" title="中文题意描述"></a>中文题意描述</h2><p>你作为星河战队的队长，被派去消灭地下臭虫基地。基地由若干房间和通道组成，整体为<strong>树形结构</strong>，每个房间有且仅有一条通往入口（1号房间）的路径。</p>
+<p>每个房间存在一定数量的臭虫，以及对应的大脑虫价值。每1名士兵可以消灭20只臭虫，攻占房间需要消耗对应数量的士兵。行进规则为：经过房间必须留守士兵清剿，士兵不会重复访问房间。</p>
+<p>士兵数量有限，无法攻占所有房间，需要合理选择攻占房间，<strong>最大化获取的大脑虫总价值</strong>。</p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><ol>
+<li><p>房间构成树形结构，访问子节点必须经过父节点，属于<strong>树形依赖背包问题</strong>；</p>
+</li>
+<li><p>每个房间所需士兵数：<code>bug数量 / 20</code>，向上取整；</p>
+</li>
+<li><p>通过深度优先搜索遍历所有可行路径，枚举所有合法房间组合，计算士兵消耗与最大价值；</p>
+</li>
+<li><p>回溯遍历所有树形分支，剔除士兵不足的方案，保留最优解。</p>
+</li>
+</ol>
+<h2 id="AC代码（Java）"><a href="#AC代码（Java）" class="headerlink" title="AC代码（Java）"></a>AC代码（Java）</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * for 杭电 ACM1011</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>  718225250</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span>&#123;	</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Cavern</span>&#123;</span><br><span class="line">		</span><br><span class="line">		Integer id;</span><br><span class="line">		<span class="type">int</span> bugs;</span><br><span class="line">		<span class="type">int</span> brains;</span><br><span class="line">		<span class="type">int</span> troopers;</span><br><span class="line">		<span class="type">boolean</span> <span class="variable">isPass</span> <span class="operator">=</span> <span class="literal">false</span>;<span class="comment">//是否已经过</span></span><br><span class="line">		List&lt;Integer&gt; next = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;Integer&gt;();</span><br><span class="line">		<span class="keyword">public</span> <span class="title function_">Cavern</span><span class="params">(<span class="type">int</span> id, <span class="type">int</span> bugs, <span class="type">int</span> brains)</span>&#123;</span><br><span class="line">			<span class="built_in">this</span>.id = Integer.valueOf(id);</span><br><span class="line">			<span class="built_in">this</span>.bugs = bugs;</span><br><span class="line">			<span class="built_in">this</span>.brains = brains; </span><br><span class="line">			<span class="built_in">this</span>.troopers = (bugs%<span class="number">20</span>==<span class="number">0</span> ? bugs/<span class="number">20</span> : bugs/<span class="number">20</span>+<span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">			</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 获得一次遍历的最大值</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">getMax</span><span class="params">()</span>&#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">Max</span> <span class="operator">=</span>curMax;</span><br><span class="line">		<span class="type">int</span> <span class="variable">id</span> <span class="operator">=</span> _list.get(_list.size()-<span class="number">1</span>);</span><br><span class="line">		<span class="type">boolean</span> <span class="variable">hasNextForPass</span> <span class="operator">=</span> <span class="literal">false</span>;<span class="comment">/*是否还有下一个节点供遍历*/</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt; _caverns[id].next.size();i++)&#123;</span><br><span class="line">			<span class="type">Integer</span> <span class="variable">nextId</span> <span class="operator">=</span> _caverns[id].next.get(i);</span><br><span class="line">			<span class="keyword">if</span>(!_caverns[nextId].isPass)&#123;</span><br><span class="line">				hasNextForPass = <span class="literal">true</span>;</span><br><span class="line">				_list.add(nextId);</span><br><span class="line">				_caverns[nextId].isPass = <span class="literal">true</span>;</span><br><span class="line">				Max = getMax();</span><br><span class="line">				_caverns[nextId].isPass = <span class="literal">false</span>;</span><br><span class="line">				_list.remove(_list.size()-<span class="number">1</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(!hasNextForPass)&#123;</span><br><span class="line">			<span class="type">int</span> <span class="variable">tempMax</span> <span class="operator">=</span> getResult() ;</span><br><span class="line">			<span class="keyword">if</span>(tempMax &gt; Max)&#123;</span><br><span class="line">				curMax = tempMax;</span><br><span class="line">				Max = curMax;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> Max;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 获得结果</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">getResult</span><span class="params">()</span>&#123;</span><br><span class="line">		<span class="type">int</span> <span class="variable">result</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">		<span class="type">int</span> <span class="variable">tempTrooperNumber</span> <span class="operator">=</span> __TrooperNumber;</span><br><span class="line">		<span class="type">int</span> <span class="variable">tempResult</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">		<span class="type">boolean</span> <span class="variable">flag</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span><span class="number">0</span>; i &lt; _list.size(); i++ )&#123;</span><br><span class="line">			<span class="type">Integer</span> <span class="variable">id</span> <span class="operator">=</span> _list.get(i);</span><br><span class="line">			<span class="keyword">if</span>(tempTrooperNumber &gt;= _caverns[id].troopers)&#123;</span><br><span class="line">				tempTrooperNumber -= _caverns[id].troopers;</span><br><span class="line">				tempResult += _caverns[id].brains;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				flag = <span class="literal">false</span>;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(flag)&#123;</span><br><span class="line">			result = tempResult;</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			tempResult = <span class="number">0</span>;</span><br><span class="line">			<span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span><span class="number">0</span>; i &lt; _list.size(); i++ )&#123;</span><br><span class="line">				<span class="type">Integer</span> <span class="variable">id</span> <span class="operator">=</span> _list.get(i);</span><br><span class="line">				_list.remove(id);</span><br><span class="line">				tempResult = getResult();</span><br><span class="line">				<span class="keyword">if</span>(tempResult &gt; result)&#123;</span><br><span class="line">					result = tempResult;</span><br><span class="line">				&#125;</span><br><span class="line">				_list.add(id);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> result;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> __CavernNumber;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> __TrooperNumber; </span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> Cavern[] _caverns;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> curMax;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span>  List&lt;Integer&gt; _list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;Integer&gt;();</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line"> </span><br><span class="line">		Scanner in=<span class="keyword">new</span> <span class="title class_">Scanner</span>(System.in);</span><br><span class="line">		<span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">			__CavernNumber = in.nextInt();</span><br><span class="line">			__TrooperNumber = in.nextInt();</span><br><span class="line">			<span class="keyword">if</span>( __CavernNumber &lt; <span class="number">0</span> &amp;&amp; __TrooperNumber &lt; <span class="number">0</span> )&#123;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span>(__CavernNumber == <span class="number">0</span> || __TrooperNumber == <span class="number">0</span>)&#123;</span><br><span class="line">				System.out.println(<span class="number">0</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				_caverns = <span class="keyword">new</span> <span class="title class_">Cavern</span>[__CavernNumber];</span><br><span class="line">				<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;__CavernNumber;i++)&#123;</span><br><span class="line">					<span class="type">int</span> <span class="variable">bugs</span> <span class="operator">=</span> in.nextInt();</span><br><span class="line">					<span class="type">int</span> <span class="variable">brains</span> <span class="operator">=</span> in.nextInt();</span><br><span class="line">					_caverns[i] = <span class="keyword">new</span> <span class="title class_">Cavern</span>(i, bugs, brains);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;__CavernNumber-<span class="number">1</span>;i++)&#123;</span><br><span class="line">					<span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> in.nextInt();</span><br><span class="line">					<span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> in.nextInt();</span><br><span class="line">					_caverns[m-<span class="number">1</span>].next.add(n-<span class="number">1</span>);</span><br><span class="line">					_caverns[n-<span class="number">1</span>].next.add(m-<span class="number">1</span>);</span><br><span class="line">				&#125;</span><br><span class="line">				curMax = <span class="number">0</span>;</span><br><span class="line">				<span class="type">Integer</span> <span class="variable">start</span> <span class="operator">=</span> Integer.valueOf(<span class="number">0</span>);</span><br><span class="line">				_caverns[<span class="number">0</span>].isPass = <span class="literal">true</span>;</span><br><span class="line">				_list.add(start);</span><br><span class="line">				System.out.println(getMax());</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="代码说明"><a href="#代码说明" class="headerlink" title="代码说明"></a>代码说明</h2><ol>
+<li><p><strong>Cavern 内部类</strong>：存储每个房间的虫子数量、大脑价值、所需士兵、邻接节点及访问状态；</p>
+</li>
+<li><p><strong>getMax() 递归回溯</strong>：深度优先遍历整棵树，枚举所有可行访问路径；</p>
+</li>
+<li><p><strong>getResult() 价值计算</strong>：校验当前路径士兵是否充足，不足则剔除节点递归求解最优解；</p>
+</li>
+</ol>
+<p>4.<strong>树形建图</strong>：采用双向邻接表存储，遍历过程中通过访问状态去重，避免回路。</p>
+<hr>
+<p><strong>版权声明</strong>：本文为原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。</p>
+
+    
+    
+  </div>
+
+  
+
+  
+
+</article>
+  
+    
+  <nav class="pagination">  
+      
+      
+  </nav>  
+  
+
+  
+</section>
+        </div>
+          
+
+      </div>
+    </main>
+    <footer id="footer" class="footer">
+      <!-- Social Links -->
+
+<div class="social-links">
+  
+  
+  
+  
+  <a target="_blank" rel="noopener" href="https://github.com/homleening" class="iconfont icon-github" title="github"></a>
+  
+  
+  
+  
+  
+  
+  <a target="_blank" rel="noopener" href="https://zhihu.com/people/homlee-ning" class="iconfont icon-zhihu" title="zhihu"></a>
+  
+  
+  
+  
+  
+  
+  <a target="_blank" rel="noopener" href="https://www.facebook.com/homlee.ning" class="iconfont icon-facebook" title="facebook"></a>
+  
+  
+  
+  
+  
+  
+  <a target="_blank" rel="noopener" href="https://x.com/homleening" class="iconfont icon-twitter" title="twitter"></a>
+  
+  
+  
+
+  
+  
+  <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+  
+</div>
+
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+  <span class="division">|</span>
+  <span class="hosting-info">
+    footer.hosting
+  </span>
+
+  <span class="copyright-year">
+    <span>
+      
+      &copy;
+      
+      2025 - 2026      
+    </span>
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+
+    <span class="author">Homlee</span>
+  </span>
+
+</div>
+    </footer>
+    <div class="back-to-top" id="back-to-top"> <i class="iconfont icon-up"></i> </div>
+  </div>
+    
+
+  
+
+
+
+
+
+
+
+<script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+
+
+
+<script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+
+
+
+<script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/even.js?v=3.0.0"></script>
+</body>
+
+</html>
