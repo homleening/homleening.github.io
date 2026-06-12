@@ -1,6 +1,6 @@
 ---
 title: Hexo GitHub Pages 踩坑笔记
-date: 2026-06-11
+date: 2026-06-11 20:06:00
 tags: [Hexo, GitHub Pages, CI/CD, GitHub Actions, 踩坑]
 categories: 踩坑笔记
 ---

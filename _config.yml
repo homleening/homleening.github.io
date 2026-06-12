@@ -10,7 +10,16 @@ root: /
 permalink: :year/:month/:title/
 default_layout: post
 
+# 主题
 theme: even
+
+# 开启文章资源文件夹
+post_asset_folder: true
+
+# 新版Hexo必备，解决相对路径裂图
+marked:
+  prependRoot: true
+  postAsset: true
 
 # 分页
 index_generator:
