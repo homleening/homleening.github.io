@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <!-- Website mata -->
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+<!-- Disable transformation -->
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<!-- Website description -->
+
+<meta name="description" content="MySql主从备份或读写分离，其实很简单" />
+
+
+<!-- Website keywords -->
+
+<meta name="keywords" content="BT面板, MySql, 甯哥的博客" />
+
+
+
+
+<!-- Website rss -->
+
+<link rel="alternate" href="/default" title="甯哥的博客" >
+
+
+<!-- Website favicon -->
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=3.0.0" />
+
+
+<!-- Canonical, good for google search engine -->
+<link rel="canonical" href="https://homleening.github.io/2026/06/20260617-技术-MySql主从备份或读写分离/" />
+
+<!-- Fancybox styling -->
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+
+
+<!-- MathJax (LaTeX) support -->
+
+
+<!-- Theme styling -->
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=3.0.0" />
+
+<!-- Analytics and push -->
+
+
+
+  
+
+
+
+<!-- LeanCloud Counter -->
+
+
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null,"server_url":null,"cdn":null},"toc":true,"fancybox":true,"latex":false};
+</script>
+  
+  <title>MySql主从备份或读写分离，其实很简单 - 甯哥的博客</title>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div class="scrollPercentage"></div>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">甯哥的博客</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+    <a href="/">
+      <li class="mobile-menu-item">
+        
+        
+        首页              </li>
+    </a>
+    
+    <a href="/archives/">
+      <li class="mobile-menu-item">
+        
+        
+        归档              </li>
+    </a>
+    
+    <a href="/categories/">
+      <li class="mobile-menu-item">
+        
+        
+        分类              </li>
+    </a>
+    
+    <a href="/friends/">
+      <li class="mobile-menu-item">
+        
+        
+        友链              </li>
+    </a>
+    
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+      <div class="logo-wrapper">  
+  <a href="/." class="logo">甯哥的博客</a>  
+</div>  
+  
+<nav class="site-navbar">  
+    
+    <ul id="menu" class="menu">  
+        
+        <li class="menu-item">  
+          <a class="menu-item-link" href="/">  
+              
+              
+              首页  
+              
+          </a>  
+        </li>  
+        
+        <li class="menu-item">  
+          <a class="menu-item-link" href="/archives/">  
+              
+              
+              归档  
+              
+          </a>  
+        </li>  
+        
+        <li class="menu-item">  
+          <a class="menu-item-link" href="/categories/">  
+              
+              
+              分类  
+              
+          </a>  
+        </li>  
+        
+        <li class="menu-item">  
+          <a class="menu-item-link" href="/friends/">  
+              
+              
+              友链  
+              
+          </a>  
+        </li>  
+        
+    </ul>  
+    
+</nav>  
+
+    </header>
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+  <header class="post-header">
+    <h1 class="post-title">
+      
+      MySql主从备份或读写分离，其实很简单
+      
+    </h1>
+
+    <div class="post-meta">
+      <span class="post-time">
+        2026-06-17
+      </span>
+      
+      
+      <span class="post-category">
+        
+        <a href="/categories/%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/">踩坑笔记</a>
+        
+      </span>
+      
+      
+    </div>
+  </header>
+
+  
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91%E5%B0%B1%E4%B8%89%E4%B8%AA%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.</span> <span class="toc-text">核心逻辑就三个步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">2.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91%E5%B0%B1%E4%B8%89%E4%B8%AA%E6%AD%A5%E9%AA%A4-1"><span class="toc-number">3.</span> <span class="toc-text">核心逻辑就三个步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E4%B8%BB%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%88%9D%E5%A7%8B%E5%8C%96%E5%AF%B9%E9%BD%90%EF%BC%88%E6%A0%B8%E5%BF%83%E5%9F%BA%E7%A1%80%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">一、第一步：主从数据初始化对齐（核心基础）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E4%B8%BB%E5%BA%93%E4%B8%80%E8%87%B4%E6%80%A7%E9%94%81%E8%A1%A8%EF%BC%88%E9%98%B2%E6%AD%A2%E4%BD%8D%E7%82%B9%E5%92%8C%E6%95%B0%E6%8D%AE%E5%8F%98%E5%8A%A8%EF%BC%89"><span class="toc-number">4.1.</span> <span class="toc-text">1.1 主库一致性锁表（防止位点和数据变动）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%85%A8%E9%87%8F%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD%E4%B8%8E%E5%AF%BC%E5%85%A5"><span class="toc-number">4.2.</span> <span class="toc-text">1.2 全量数据备份与导入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E5%88%9B%E5%BB%BA%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5%E4%B8%93%E5%B1%9E%E8%B4%A6%E5%8F%B7%EF%BC%88%E4%BB%85%E4%B8%BB%E5%BA%93%E6%93%8D%E4%BD%9C%EF%BC%89"><span class="toc-number">4.3.</span> <span class="toc-text">1.3 创建主从同步专属账号（仅主库操作）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E4%B8%BB%E4%BB%8E%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE%EF%BC%8C%E4%BB%8E%E5%BA%93%E5%BC%80%E5%90%AF%E5%8F%AA%E8%AF%BB%E9%99%90%E5%88%B6"><span class="toc-number">5.</span> <span class="toc-text">二、第二步：主从参数配置，从库开启只读限制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%A0%B8%E5%BF%83%E9%85%8D%E7%BD%AE%E7%BA%A6%E6%9D%9F%EF%BC%88%E5%BF%85%E9%81%B5%E5%AE%88%EF%BC%89"><span class="toc-number">5.1.</span> <span class="toc-text">2.1 核心配置约束（必遵守）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E4%B8%BB%E5%BA%93%E5%AE%8C%E6%95%B4-my-cnf-%E9%85%8D%E7%BD%AE"><span class="toc-number">5.2.</span> <span class="toc-text">2.2 主库完整 my.cnf 配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E4%BB%8E%E5%BA%93%E5%AE%8C%E6%95%B4-my-cnf-%E9%85%8D%E7%BD%AE%EF%BC%88%E6%A0%B8%E5%BF%83%E5%8F%AA%E8%AF%BB%EF%BC%89"><span class="toc-number">5.3.</span> <span class="toc-text">2.3 从库完整 my.cnf 配置（核心只读）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E9%85%8D%E7%BD%AE%E5%90%8C%E6%AD%A5%E4%BD%8D%E7%82%B9%EF%BC%8C%E5%90%AF%E5%8A%A8%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5"><span class="toc-number">6.</span> <span class="toc-text">三、第三步：配置同步位点，启动主从同步</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E4%BB%8E%E5%BA%93%E9%87%8D%E7%BD%AE%E5%B9%B6%E9%85%8D%E7%BD%AE%E5%90%8C%E6%AD%A5%E9%93%BE%E8%B7%AF"><span class="toc-number">6.1.</span> <span class="toc-text">3.1 从库重置并配置同步链路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%90%8C%E6%AD%A5%E7%8A%B6%E6%80%81%E6%A0%A1%E9%AA%8C%EF%BC%88%E5%85%B3%E9%94%AE%EF%BC%89"><span class="toc-number">6.2.</span> <span class="toc-text">3.2 同步状态校验（关键）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%85%B3%E9%94%AE%E5%AE%9E%E6%93%8D%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%88%E9%81%BF%E5%9D%91%E6%B1%87%E6%80%BB%EF%BC%89"><span class="toc-number">7.</span> <span class="toc-text">四、关键实操注意事项（避坑汇总）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%90%8C%E6%AD%A5%E9%87%8D%E5%90%AF%E6%81%A2%E5%A4%8D%E8%A7%84%E5%88%99"><span class="toc-number">7.1.</span> <span class="toc-text">4.1 同步重启恢复规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%8D%95%E6%9D%A1%E6%95%B0%E6%8D%AE%E6%8A%A5%E9%94%99%E5%90%8C%E6%AD%A5%E9%80%BB%E8%BE%91"><span class="toc-number">7.2.</span> <span class="toc-text">4.2 单条数据报错同步逻辑</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E4%B8%BB%E5%BA%93%E8%AF%BB%E5%86%99%E6%9D%83%E9%99%90%E8%AF%B4%E6%98%8E"><span class="toc-number">7.3.</span> <span class="toc-text">4.3 主库读写权限说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-binlog%E6%97%A5%E5%BF%97%E8%BF%87%E6%9C%9F%E9%A3%8E%E9%99%A9"><span class="toc-number">7.4.</span> <span class="toc-text">4.4 binlog日志过期风险</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E4%B8%BB%E4%BB%8E%E8%B4%A6%E5%8F%B7%E6%9D%83%E9%99%90%E5%B7%AE%E5%BC%82%E8%AF%B4%E6%98%8E"><span class="toc-number">7.5.</span> <span class="toc-text">4.5 主从账号权限差异说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-number">8.</span> <span class="toc-text">五、总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%90%8E%E7%9A%84%E4%B8%BB%E5%BA%93%E5%AE%8C%E6%95%B4%E9%85%8D%E7%BD%AE%E5%8F%82%E8%80%83"><span class="toc-number">9.</span> <span class="toc-text">修改后的主库完整配置参考</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%90%8E%E7%9A%84%E4%BB%8E%E5%BA%93%E5%AE%8C%E6%95%B4%E9%85%8D%E7%BD%AE%E5%8F%82%E8%80%83"><span class="toc-number">10.</span> <span class="toc-text">修改后的从库完整配置参考</span></a></li></ol>
+    </div>
+  </div>
+  
+
+  <div class="post-content">
+    
+    <h2 id="核心逻辑就三个步骤"><a href="#核心逻辑就三个步骤" class="headerlink" title="核心逻辑就三个步骤"></a>核心逻辑就三个步骤</h2><ol>
+<li>主库和从库同步数据，保证完全一致</li>
+<li>配置主库和从库的数据库参数，从库设置只读</li>
+<li>找到主库同步位点，启动同步流程</li>
+</ol>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>很多人觉得 MySQL 主从复制、读写分离配置复杂、坑多，实则理清核心逻辑后，整体流程非常标准化。本文基于云服务器 + BT面板 + MySQL8.0 真实实操整理，全程落地可用，同时汇总所有高频踩坑点，零基础也能顺利搭建主从备份、读写分离架构。</p>
+<h2 id="核心逻辑就三个步骤-1"><a href="#核心逻辑就三个步骤-1" class="headerlink" title="核心逻辑就三个步骤"></a>核心逻辑就三个步骤</h2><p>MySQL主从搭建、读写分离落地，归根结底只有三步，所有配置、命令、优化都是围绕这三点展开：</p>
+<ol>
+<li><p><strong>主库和从库同步数据，保证完全一致</strong>：初始化全量数据对齐，为增量同步打下基础</p>
+</li>
+<li><p><strong>配置主库和从库的数据库参数，从库设置只读</strong>：区分主从身份、开启日志、优化环境，保障同步稳定</p>
+</li>
+<li><p><strong>找到主库同步位点，启动同步流程</strong>：绑定主从链路，开启实时增量同步</p>
+</li>
+</ol>
+<hr>
+<h2 id="一、第一步：主从数据初始化对齐（核心基础）"><a href="#一、第一步：主从数据初始化对齐（核心基础）" class="headerlink" title="一、第一步：主从数据初始化对齐（核心基础）"></a>一、第一步：主从数据初始化对齐（核心基础）</h2><p>主从同步的前提是<strong>初始数据完全一致</strong>，否则启动同步后会出现主键冲突、表不存在等报错，直接导致同步中断。</p>
+<h3 id="1-1-主库一致性锁表（防止位点和数据变动）"><a href="#1-1-主库一致性锁表（防止位点和数据变动）" class="headerlink" title="1.1 主库一致性锁表（防止位点和数据变动）"></a>1.1 主库一致性锁表（防止位点和数据变动）</h3><p>首次搭建主从、全量数据同步时，需要锁定主库，避免导出数据期间主库产生新写入，造成数据不一致。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 锁定全局表，禁止写入，固定同步位点</span></span><br><span class="line">FLUSH TABLES <span class="keyword">WITH</span> READ LOCK;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查看主库当前二进制日志位点（关键参数，后续从库需要用到）</span></span><br><span class="line"><span class="keyword">SHOW</span> MASTER STATUS;</span><br></pre></td></tr></table></figure>
+
+<p>执行完 <code>SHOW MASTER STATUS</code> 后，务必记录对应的 <strong>File（日志文件名）</strong> 和 <strong>Position（位点值）</strong>，这是主从同步的精准起点。</p>
+<h3 id="1-2-全量数据备份与导入"><a href="#1-2-全量数据备份与导入" class="headerlink" title="1.2 全量数据备份与导入"></a>1.2 全量数据备份与导入</h3><p>InnoDB引擎生产环境推荐无锁备份，不阻塞业务读写，实现数据快照一致性：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -uroot -p --all-databases --master-data=2 --single-transaction &gt; full_backup.sql</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>将导出的备份文件上传至从库服务器，导入从库数据库，完成<strong>主从初始数据完全对齐</strong>。数据导入完成后，解锁主库，恢复正常业务读写：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UNLOCK TABLES;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-创建主从同步专属账号（仅主库操作）"><a href="#1-3-创建主从同步专属账号（仅主库操作）" class="headerlink" title="1.3 创建主从同步专属账号（仅主库操作）"></a>1.3 创建主从同步专属账号（仅主库操作）</h3><p>主从同步需要独立的复制账号，仅授予复制权限，遵循最小权限原则。同时适配MySQL8.0加密规则，解决握手失败问题：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 清理旧冲突账号</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">USER</span> IF <span class="keyword">EXISTS</span> <span class="string">&#x27;repl&#x27;</span>@<span class="string">&#x27;%&#x27;</span>;</span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">USER</span> IF <span class="keyword">EXISTS</span> <span class="string">&#x27;repl&#x27;</span>@<span class="string">&#x27;从库IP&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建兼容8.0的同步账号</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">&#x27;repl&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">WITH</span> mysql_native_password <span class="keyword">BY</span> <span class="string">&#x27;自定义密码&#x27;</span>;</span><br><span class="line"><span class="comment">-- 授予复制专属权限</span></span><br><span class="line"><span class="keyword">GRANT</span> REPLICATION SLAVE <span class="keyword">ON</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;repl&#x27;</span>@<span class="string">&#x27;%&#x27;</span>;</span><br><span class="line">FLUSH PRIVILEGES;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>重点说明</strong>：同步账号 <code>repl</code> 只需在主库创建，<strong>主从库账号密码可以不一致</strong>，从库无需创建该账号，不影响同步链路。</p>
+<hr>
+<h2 id="二、第二步：主从参数配置，从库开启只读限制"><a href="#二、第二步：主从参数配置，从库开启只读限制" class="headerlink" title="二、第二步：主从参数配置，从库开启只读限制"></a>二、第二步：主从参数配置，从库开启只读限制</h2><p>数据对齐后，核心是修改 <code>my.cnf</code> 配置文件，区分主从身份、开启日志功能、优化云服务器环境，同时给从库配置只读，杜绝数据乱写入。</p>
+<h3 id="2-1-核心配置约束（必遵守）"><a href="#2-1-核心配置约束（必遵守）" class="headerlink" title="2.1 核心配置约束（必遵守）"></a>2.1 核心配置约束（必遵守）</h3><ul>
+<li><p><strong>server-id 全局唯一</strong>：主库、从库ID不能重复，主库默认1，从库默认2</p>
+</li>
+<li><p>主从 <code>sql-mode</code>、字符集、表名大小写规则必须完全一致，避免同步报错</p>
+</li>
+<li><p>云服务器<strong>必须开启 skip_name_resolve &#x3D; 1</strong>，关闭DNS反向解析，解决公网握手超时、连接被拦截问题</p>
+</li>
+</ul>
+<h3 id="2-2-主库完整-my-cnf-配置"><a href="#2-2-主库完整-my-cnf-配置" class="headerlink" title="2.2 主库完整 my.cnf 配置"></a>2.2 主库完整 my.cnf 配置</h3><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[client]</span></span><br><span class="line"><span class="attr">port</span>		= <span class="number">3306</span></span><br><span class="line"><span class="attr">socket</span>		= /tmp/mysql.sock</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">port</span>		= <span class="number">3306</span></span><br><span class="line"><span class="attr">socket</span>		= /tmp/mysql.sock</span><br><span class="line"><span class="attr">connect_timeout</span> = <span class="number">120</span></span><br><span class="line"><span class="attr">datadir</span> = /www/server/data</span><br><span class="line"><span class="attr">default_storage_engine</span> = InnoDB</span><br><span class="line"><span class="attr">key_buffer_size</span> = <span class="number">32</span>M</span><br><span class="line"><span class="attr">max_allowed_packet</span> = <span class="number">1</span>G</span><br><span class="line"><span class="attr">table_open_cache</span> = <span class="number">1024</span></span><br><span class="line"><span class="attr">max_heap_table_size</span> = <span class="number">64</span>M</span><br><span class="line"><span class="attr">sort_buffer_size</span> = <span class="number">768</span>K</span><br><span class="line"><span class="attr">net_buffer_length</span> = <span class="number">4</span>K</span><br><span class="line"><span class="attr">read_buffer_size</span> = <span class="number">768</span>K</span><br><span class="line"><span class="attr">read_rnd_buffer_size</span> = <span class="number">256</span>K</span><br><span class="line"><span class="attr">myisam_sort_buffer_size</span> = <span class="number">8</span>M</span><br><span class="line"><span class="attr">thread_cache_size</span> = <span class="number">16</span></span><br><span class="line"><span class="attr">tmp_table_size</span> = <span class="number">32</span>M</span><br><span class="line"><span class="attr">lower_case_table_names</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">default_authentication_plugin</span> = mysql_native_password</span><br><span class="line"><span class="attr">sql-mode</span>=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES</span><br><span class="line"></span><br><span class="line"><span class="attr">explicit_defaults_for_timestamp</span> = <span class="literal">true</span></span><br><span class="line"><span class="attr">skip_name_resolve</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">max_connections</span> = <span class="number">100</span></span><br><span class="line"><span class="attr">max_connect_errors</span> = <span class="number">10000</span></span><br><span class="line"><span class="attr">open_files_limit</span> = <span class="number">65535</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 主库核心binlog配置</span></span><br><span class="line"><span class="attr">log-bin</span>=mysql-bin</span><br><span class="line"><span class="attr">binlog_format</span>=ROW</span><br><span class="line"><span class="attr">server-id</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">binlog_expire_logs_seconds</span> = <span class="number">600000</span></span><br><span class="line"></span><br><span class="line"><span class="attr">slow_query_log</span>=<span class="number">1</span></span><br><span class="line"><span class="attr">slow-query-log-file</span>=/www/server/data/mysql-slow.log</span><br><span class="line"><span class="attr">long_query_time</span>=<span class="number">3</span></span><br><span class="line"><span class="attr">early-plugin-load</span> = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># InnoDB优化配置</span></span><br><span class="line"><span class="attr">innodb_data_home_dir</span> = /www/server/data</span><br><span class="line"><span class="attr">innodb_data_file_path</span> = ibdata1:<span class="number">10</span>M:autoextend</span><br><span class="line"><span class="attr">innodb_log_group_home_dir</span> = /www/server/data</span><br><span class="line"><span class="attr">innodb_buffer_pool_size</span> = <span class="number">512</span>M</span><br><span class="line"><span class="attr">innodb_log_file_size</span> = <span class="number">256</span>M</span><br><span class="line"><span class="attr">innodb_log_buffer_size</span> = <span class="number">16</span>M</span><br><span class="line"><span class="attr">innodb_flush_log_at_trx_commit</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">innodb_lock_wait_timeout</span> = <span class="number">50</span></span><br><span class="line"><span class="attr">innodb_max_dirty_pages_pct</span> = <span class="number">90</span></span><br><span class="line"><span class="attr">innodb_read_io_threads</span> = <span class="number">2</span></span><br><span class="line"><span class="attr">innodb_write_io_threads</span> = <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="section">[mysqldump]</span></span><br><span class="line">quick</span><br><span class="line"><span class="attr">max_allowed_packet</span> = <span class="number">500</span>M</span><br><span class="line"></span><br><span class="line"><span class="section">[mysql]</span></span><br><span class="line">no-auto-rehash</span><br><span class="line"></span><br><span class="line"><span class="section">[myisamchk]</span></span><br><span class="line"><span class="attr">key_buffer_size</span> = <span class="number">32</span>M</span><br><span class="line"><span class="attr">sort_buffer_size</span> = <span class="number">768</span>K</span><br><span class="line"><span class="attr">read_buffer</span> = <span class="number">2</span>M</span><br><span class="line"><span class="attr">write_buffer</span> = <span class="number">2</span>M</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqlhotcopy]</span></span><br><span class="line">interactive-timeout</span><br><span class="line"></span><br><span class="line"><span class="comment"># 半同步主库配置（可选，提升数据一致性）</span></span><br><span class="line"><span class="attr">plugin-load-add</span>=rpl_semi_sync_master.so</span><br><span class="line"><span class="attr">rpl_semi_sync_master</span>=<span class="literal">ON</span></span><br><span class="line"><span class="attr">rpl_semi_sync_master_wait_for_slave_count</span>=<span class="number">1</span></span><br><span class="line"><span class="attr">rpl_semi_sync_master_wait_point</span>=AFTER_SYNC</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-从库完整-my-cnf-配置（核心只读）"><a href="#2-3-从库完整-my-cnf-配置（核心只读）" class="headerlink" title="2.3 从库完整 my.cnf 配置（核心只读）"></a>2.3 从库完整 my.cnf 配置（核心只读）</h3><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[client]</span></span><br><span class="line"><span class="attr">port</span>		= <span class="number">3306</span></span><br><span class="line"><span class="attr">socket</span>		= /tmp/mysql.sock</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">port</span>		= <span class="number">3306</span></span><br><span class="line"><span class="attr">socket</span>		= /tmp/mysql.sock</span><br><span class="line"><span class="attr">datadir</span> = /www/server/data</span><br><span class="line"><span class="attr">default_storage_engine</span> = InnoDB</span><br><span class="line"><span class="attr">key_buffer_size</span> = <span class="number">32</span>M</span><br><span class="line"><span class="attr">max_allowed_packet</span> = <span class="number">1</span>G</span><br><span class="line"><span class="attr">table_open_cache</span> = <span class="number">2048</span></span><br><span class="line"><span class="attr">sort_buffer_size</span> = <span class="number">768</span>K</span><br><span class="line"><span class="attr">net_buffer_length</span> = <span class="number">4</span>K</span><br><span class="line"><span class="attr">read_buffer_size</span> = <span class="number">768</span>K</span><br><span class="line"><span class="attr">read_rnd_buffer_size</span> = <span class="number">256</span>K</span><br><span class="line"><span class="attr">myisam_sort_buffer_size</span> = <span class="number">8</span>M</span><br><span class="line"><span class="attr">tmp_table_size</span> = <span class="number">64</span>M</span><br><span class="line"><span class="attr">max_heap_table_size</span> = <span class="number">64</span>M</span><br><span class="line"><span class="attr">lower_case_table_names</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">default_authentication_plugin</span> = mysql_native_password</span><br><span class="line"><span class="attr">sql-mode</span>=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES</span><br><span class="line"></span><br><span class="line"><span class="attr">explicit_defaults_for_timestamp</span> = <span class="literal">true</span></span><br><span class="line">skip-name-resolve</span><br><span class="line"><span class="attr">max_connections</span> = <span class="number">500</span></span><br><span class="line"><span class="attr">max_connect_errors</span> = <span class="number">10000</span></span><br><span class="line"><span class="attr">open_files_limit</span> = <span class="number">65535</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 从库核心主从配置</span></span><br><span class="line"><span class="attr">server-id</span> = <span class="number">2</span></span><br><span class="line"><span class="attr">relay_log</span> = relay-bin</span><br><span class="line"><span class="attr">log_bin</span> = <span class="literal">OFF</span></span><br><span class="line"><span class="attr">log_replica_updates</span> = <span class="number">0</span></span><br><span class="line"><span class="comment"># 双只读配置，彻底禁止写入（读写分离核心）</span></span><br><span class="line"><span class="attr">read_only</span> = <span class="literal">ON</span></span><br><span class="line"><span class="attr">super_read_only</span> = <span class="literal">ON</span></span><br><span class="line"><span class="comment"># 忽略系统库同步，减少资源消耗</span></span><br><span class="line"><span class="attr">replicate_ignore_db</span>=mysql</span><br><span class="line"><span class="attr">replicate_ignore_db</span>=information_schema</span><br><span class="line"><span class="attr">replicate_ignore_db</span>=performance_schema</span><br><span class="line"><span class="attr">replicate_ignore_db</span>=sys</span><br><span class="line"><span class="comment"># 仅同步业务库，自行替换为自己的业务库名</span></span><br><span class="line"><span class="attr">replicate_wild_do_table</span>=hn_db.%</span><br><span class="line"></span><br><span class="line"><span class="attr">slow_query_log</span>=<span class="number">1</span></span><br><span class="line"><span class="attr">slow-query-log-file</span>=/www/server/data/mysql-slow.log</span><br><span class="line"><span class="attr">long_query_time</span>=<span class="number">3</span></span><br><span class="line"><span class="attr">early-plugin-load</span> = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># InnoDB优化配置</span></span><br><span class="line"><span class="attr">innodb_data_home_dir</span> = /www/server/data</span><br><span class="line"><span class="attr">innodb_data_file_path</span> = ibdata1:<span class="number">10</span>M:autoextend</span><br><span class="line"><span class="attr">innodb_log_group_home_dir</span> = /www/server/data</span><br><span class="line"><span class="attr">innodb_buffer_pool_size</span> = <span class="number">256</span>M</span><br><span class="line"><span class="attr">innodb_log_file_size</span> = <span class="number">512</span>M</span><br><span class="line"><span class="attr">innodb_log_buffer_size</span> = <span class="number">16</span>M</span><br><span class="line"><span class="attr">innodb_flush_log_at_trx_commit</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">innodb_lock_wait_timeout</span> = <span class="number">50</span></span><br><span class="line"><span class="attr">innodb_max_dirty_pages_pct</span> = <span class="number">90</span></span><br><span class="line"><span class="attr">innodb_read_io_threads</span> = <span class="number">2</span></span><br><span class="line"><span class="attr">innodb_write_io_threads</span> = <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="section">[mysqldump]</span></span><br><span class="line">quick</span><br><span class="line"><span class="attr">max_allowed_packet</span> = <span class="number">500</span>M</span><br><span class="line"></span><br><span class="line"><span class="section">[mysql]</span></span><br><span class="line">no-auto-rehash</span><br><span class="line"></span><br><span class="line"><span class="section">[myisamchk]</span></span><br><span class="line"><span class="attr">key_buffer_size</span> = <span class="number">32</span>M</span><br><span class="line"><span class="attr">sort_buffer_size</span> = <span class="number">768</span>K</span><br><span class="line"><span class="attr">read_buffer</span> = <span class="number">2</span>M</span><br><span class="line"><span class="attr">write_buffer</span> = <span class="number">2</span>M</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqlhotcopy]</span></span><br><span class="line">interactive-timeout</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>配置修改完成后，<strong>重启主从MySQL服务</strong>，让所有参数生效。</p>
+<hr>
+<h2 id="三、第三步：配置同步位点，启动主从同步"><a href="#三、第三步：配置同步位点，启动主从同步" class="headerlink" title="三、第三步：配置同步位点，启动主从同步"></a>三、第三步：配置同步位点，启动主从同步</h2><p>数据对齐、参数配置完成后，最后一步就是绑定主库信息、填写之前记录的同步位点，启动实时同步。</p>
+<h3 id="3-1-从库重置并配置同步链路"><a href="#3-1-从库重置并配置同步链路" class="headerlink" title="3.1 从库重置并配置同步链路"></a>3.1 从库重置并配置同步链路</h3><p>清空从库旧的同步记录，避免配置冲突，绑定主库IP、端口、同步账号和精准位点：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 停止同步、清空历史同步信息</span></span><br><span class="line">STOP SLAVE;</span><br><span class="line">RESET SLAVE <span class="keyword">ALL</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 绑定主库同步信息（位点替换为自己主库 SHOW MASTER STATUS 查询的值）</span></span><br><span class="line">CHANGE MASTER <span class="keyword">TO</span></span><br><span class="line">MASTER_HOST<span class="operator">=</span><span class="string">&#x27;主库公网IP&#x27;</span>,</span><br><span class="line">MASTER_PORT<span class="operator">=</span><span class="number">3306</span>,</span><br><span class="line">MASTER_USER<span class="operator">=</span><span class="string">&#x27;repl&#x27;</span>,</span><br><span class="line">MASTER_PASSWORD<span class="operator">=</span><span class="string">&#x27;同步账号密码&#x27;</span>,</span><br><span class="line">MASTER_LOG_FILE<span class="operator">=</span><span class="string">&#x27;mysql-bin.000011&#x27;</span>,</span><br><span class="line">MASTER_LOG_POS<span class="operator">=</span><span class="number">11532</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 启动同步线程</span></span><br><span class="line"><span class="keyword">START</span> SLAVE;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-同步状态校验（关键）"><a href="#3-2-同步状态校验（关键）" class="headerlink" title="3.2 同步状态校验（关键）"></a>3.2 同步状态校验（关键）</h3><p>通过命令查看完整同步状态，排查异常：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> SLAVE STATUS\G</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>正常同步标准</strong>：</p>
+<ul>
+<li><p>Slave_IO_Running: Yes（成功拉取主库binlog日志）</p>
+</li>
+<li><p>Slave_SQL_Running: Yes（成功执行日志、同步数据）</p>
+</li>
+<li><p>Slave_IO_State: Waiting for source to send event（实时监听主库新数据）</p>
+</li>
+</ul>
+<p><strong>异常快速判断</strong>：</p>
+<ul>
+<li><p>IO线程异常：网络、安全组、账号密码、DNS解析问题</p>
+</li>
+<li><p>SQL线程异常：主从数据不一致、表结构差异、主键冲突</p>
+</li>
+</ul>
+<hr>
+<h2 id="四、关键实操注意事项（避坑汇总）"><a href="#四、关键实操注意事项（避坑汇总）" class="headerlink" title="四、关键实操注意事项（避坑汇总）"></a>四、关键实操注意事项（避坑汇总）</h2><h3 id="4-1-同步重启恢复规则"><a href="#4-1-同步重启恢复规则" class="headerlink" title="4.1 同步重启恢复规则"></a>4.1 同步重启恢复规则</h3><p>MySQL8.0 默认将同步位点持久化到系统表，<strong>从库重启后，同步位点不会丢失</strong>。但通过 <code>CHANGE MASTER TO</code> 配置的主库连接信息为临时内存配置，重启MySQL后会失效，如需永久生效，可写入配置文件。</p>
+<h3 id="4-2-单条数据报错同步逻辑"><a href="#4-2-单条数据报错同步逻辑" class="headerlink" title="4.2 单条数据报错同步逻辑"></a>4.2 单条数据报错同步逻辑</h3><p>若某一行数据同步出错，仅会暂停<strong>当前数据表</strong>的后续同步，其他数据表不受影响。生产环境禁止跳过报错，否则会造成永久数据不一致，需手动对齐主从数据后重启同步。</p>
+<h3 id="4-3-主库读写权限说明"><a href="#4-3-主库读写权限说明" class="headerlink" title="4.3 主库读写权限说明"></a>4.3 主库读写权限说明</h3><p>仅首次全量初始化需要锁表，日常同步故障、重启从库、重新绑定位点，<strong>无需锁定主库</strong>，主库可正常读写业务数据，同步恢复后会自动追平断开期间的所有增量数据。</p>
+<h3 id="4-4-binlog日志过期风险"><a href="#4-4-binlog日志过期风险" class="headerlink" title="4.4 binlog日志过期风险"></a>4.4 binlog日志过期风险</h3><p>主库binlog日志会自动过期清理，若从库断开同步时间过久，主库清理了旧日志，增量同步会彻底失效，此时需要重新全量备份对齐数据，重建同步链路。</p>
+<h3 id="4-5-主从账号权限差异说明"><a href="#4-5-主从账号权限差异说明" class="headerlink" title="4.5 主从账号权限差异说明"></a>4.5 主从账号权限差异说明</h3><p>同步专用repl账号主从密码、权限可不一致；但业务账号、root账号建议仅在主库操作，不要手动修改从库账号密码和权限，避免同步覆盖导致报错。</p>
+<hr>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>MySQL主从备份、读写分离架构，核心始终围绕<strong>数据对齐、参数配置、位点同步</strong>三大步骤。看似坑多，实则所有报错和问题，基本都是参数不统一、网络拦截、数据初始不一致、账号授权异常导致。</p>
+<p>按照本文标准化流程配置，搭配云服务器专属优化参数，可完美实现MySQL实时主从备份、读写分离，兼顾数据安全和业务查询性能。</p>
+<h2 id="修改后的主库完整配置参考"><a href="#修改后的主库完整配置参考" class="headerlink" title="修改后的主库完整配置参考"></a>修改后的主库完整配置参考</h2><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[client]</span></span><br><span class="line"><span class="comment">#password	= your_password</span></span><br><span class="line"><span class="attr">port</span>		= <span class="number">3306</span></span><br><span class="line"><span class="attr">socket</span>		= /tmp/mysql.sock</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">port</span>		= <span class="number">3306</span></span><br><span class="line"><span class="attr">socket</span>		= /tmp/mysql.sock</span><br><span class="line"><span class="comment"># 延长握手超时时间，默认10秒太短</span></span><br><span class="line"><span class="attr">connect_timeout</span> = <span class="number">120</span></span><br><span class="line"><span class="attr">datadir</span> = /www/server/data</span><br><span class="line"><span class="attr">default_storage_engine</span> = InnoDB</span><br><span class="line"><span class="comment">#skip-external-locking  //因主从复制需要注释</span></span><br><span class="line"><span class="attr">key_buffer_size</span> = <span class="number">32</span>M</span><br><span class="line"><span class="attr">max_allowed_packet</span> = <span class="number">1</span>G</span><br><span class="line"><span class="attr">table_open_cache</span> = <span class="number">1024</span></span><br><span class="line"><span class="attr">max_heap_table_size</span> = <span class="number">64</span>M</span><br><span class="line"><span class="attr">sort_buffer_size</span> = <span class="number">768</span>K</span><br><span class="line"><span class="attr">net_buffer_length</span> = <span class="number">4</span>K</span><br><span class="line"><span class="attr">read_buffer_size</span> = <span class="number">768</span>K</span><br><span class="line"><span class="attr">read_rnd_buffer_size</span> = <span class="number">256</span>K</span><br><span class="line"><span class="attr">myisam_sort_buffer_size</span> = <span class="number">8</span>M</span><br><span class="line"><span class="attr">thread_cache_size</span> = <span class="number">16</span></span><br><span class="line"><span class="attr">tmp_table_size</span> = <span class="number">32</span>M</span><br><span class="line"><span class="attr">lower_case_table_names</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">default_authentication_plugin</span> = mysql_native_password</span><br><span class="line"><span class="attr">sql-mode</span>=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES</span><br><span class="line"></span><br><span class="line"><span class="attr">explicit_defaults_for_timestamp</span> = <span class="literal">true</span></span><br><span class="line"><span class="comment">#skip_name_resolve（云服务器必开 = 1）</span></span><br><span class="line"><span class="attr">skip_name_resolve</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">max_connections</span> = <span class="number">100</span></span><br><span class="line"><span class="attr">max_connect_errors</span> = <span class="number">10000</span> <span class="comment">#防止网络波动导致从库 IP 被主库拉黑断开同步</span></span><br><span class="line"><span class="attr">open_files_limit</span> = <span class="number">65535</span></span><br><span class="line"></span><br><span class="line"><span class="attr">log-bin</span>=mysql-bin</span><br><span class="line"><span class="attr">binlog_format</span>=ROW</span><br><span class="line"><span class="attr">server-id</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">binlog_expire_logs_seconds</span> = <span class="number">600000</span></span><br><span class="line"><span class="attr">slow_query_log</span>=<span class="number">1</span></span><br><span class="line"><span class="attr">slow-query-log-file</span>=/www/server/data/mysql-slow.log</span><br><span class="line"><span class="attr">long_query_time</span>=<span class="number">3</span></span><br><span class="line"><span class="comment">#log_queries_not_using_indexes=on</span></span><br><span class="line"><span class="attr">early-plugin-load</span> = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attr">innodb_data_home_dir</span> = /www/server/data</span><br><span class="line"><span class="attr">innodb_data_file_path</span> = ibdata1:<span class="number">10</span>M:autoextend</span><br><span class="line"><span class="attr">innodb_log_group_home_dir</span> = /www/server/data</span><br><span class="line"><span class="attr">innodb_buffer_pool_size</span> = <span class="number">512</span>M</span><br><span class="line"><span class="attr">innodb_log_file_size</span> = <span class="number">256</span>M</span><br><span class="line"><span class="attr">innodb_log_buffer_size</span> = <span class="number">16</span>M</span><br><span class="line"><span class="attr">innodb_flush_log_at_trx_commit</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">innodb_lock_wait_timeout</span> = <span class="number">50</span></span><br><span class="line"><span class="attr">innodb_max_dirty_pages_pct</span> = <span class="number">90</span></span><br><span class="line"><span class="attr">innodb_read_io_threads</span> = <span class="number">2</span></span><br><span class="line"><span class="attr">innodb_write_io_threads</span> = <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="section">[mysqldump]</span></span><br><span class="line">quick</span><br><span class="line"><span class="attr">max_allowed_packet</span> = <span class="number">500</span>M</span><br><span class="line"></span><br><span class="line"><span class="section">[mysql]</span></span><br><span class="line">no-auto-rehash</span><br><span class="line"></span><br><span class="line"><span class="section">[myisamchk]</span></span><br><span class="line"><span class="attr">key_buffer_size</span> = <span class="number">32</span>M</span><br><span class="line"><span class="attr">sort_buffer_size</span> = <span class="number">768</span>K</span><br><span class="line"><span class="attr">read_buffer</span> = <span class="number">2</span>M</span><br><span class="line"><span class="attr">write_buffer</span> = <span class="number">2</span>M</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqlhotcopy]</span></span><br><span class="line">interactive-timeout</span><br><span class="line"></span><br><span class="line"><span class="comment"># 半同步主库</span></span><br><span class="line"><span class="attr">plugin-load-add</span>=rpl_semi_sync_master.so</span><br><span class="line"><span class="attr">rpl_semi_sync_master</span>=<span class="literal">ON</span></span><br><span class="line"><span class="attr">rpl_semi_sync_master_wait_for_slave_count</span>=<span class="number">1</span></span><br><span class="line"><span class="attr">rpl_semi_sync_master_wait_point</span>=AFTER_SYNC</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="修改后的从库完整配置参考"><a href="#修改后的从库完整配置参考" class="headerlink" title="修改后的从库完整配置参考"></a>修改后的从库完整配置参考</h2><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[client]</span></span><br><span class="line"><span class="comment">#password	= your_password</span></span><br><span class="line"><span class="attr">port</span>		= <span class="number">3306</span></span><br><span class="line"><span class="attr">socket</span>		= /tmp/mysql.sock</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">port</span>		= <span class="number">3306</span></span><br><span class="line"><span class="attr">socket</span>		= /tmp/mysql.sock</span><br><span class="line"><span class="attr">datadir</span> = /www/server/data</span><br><span class="line"><span class="attr">default_storage_engine</span> = InnoDB</span><br><span class="line"><span class="comment">#skip-external-locking</span></span><br><span class="line"><span class="attr">key_buffer_size</span> = <span class="number">32</span>M</span><br><span class="line"><span class="attr">max_allowed_packet</span> = <span class="number">1</span>G</span><br><span class="line"><span class="attr">table_open_cache</span> = <span class="number">2048</span></span><br><span class="line"><span class="attr">sort_buffer_size</span> = <span class="number">768</span>K</span><br><span class="line"><span class="attr">net_buffer_length</span> = <span class="number">4</span>K</span><br><span class="line"><span class="attr">read_buffer_size</span> = <span class="number">768</span>K</span><br><span class="line"><span class="attr">read_rnd_buffer_size</span> = <span class="number">256</span>K</span><br><span class="line"><span class="attr">myisam_sort_buffer_size</span> = <span class="number">8</span>M</span><br><span class="line"><span class="comment">#thread_cache_size = 16</span></span><br><span class="line"><span class="attr">tmp_table_size</span> = <span class="number">64</span>M</span><br><span class="line"><span class="attr">max_heap_table_size</span> = <span class="number">64</span>M</span><br><span class="line"><span class="attr">lower_case_table_names</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">default_authentication_plugin</span> = mysql_native_password</span><br><span class="line"><span class="attr">sql-mode</span>=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES</span><br><span class="line"></span><br><span class="line"><span class="attr">explicit_defaults_for_timestamp</span> = <span class="literal">true</span></span><br><span class="line">skip-name-resolve</span><br><span class="line"><span class="attr">max_connections</span> = <span class="number">500</span></span><br><span class="line"><span class="attr">max_connect_errors</span> = <span class="number">10000</span></span><br><span class="line"><span class="attr">open_files_limit</span> = <span class="number">65535</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 从库核心复制配置</span></span><br><span class="line"><span class="attr">server-id</span> = <span class="number">2</span></span><br><span class="line"><span class="attr">relay_log</span> = relay-bin</span><br><span class="line"><span class="attr">log_bin</span> = <span class="literal">OFF</span></span><br><span class="line"><span class="attr">log_replica_updates</span> = <span class="number">0</span></span><br><span class="line"><span class="attr">read_only</span> = <span class="literal">ON</span></span><br><span class="line"><span class="attr">super_read_only</span> = <span class="literal">ON</span></span><br><span class="line"><span class="attr">replicate_ignore_db</span>=mysql</span><br><span class="line"><span class="attr">replicate_ignore_db</span>=information_schema</span><br><span class="line"><span class="attr">replicate_ignore_db</span>=performance_schema</span><br><span class="line"><span class="attr">replicate_ignore_db</span>=sys</span><br><span class="line"><span class="comment"># 替换成你的业务库名</span></span><br><span class="line"><span class="attr">replicate_wild_do_table</span>=hn_db.%</span><br><span class="line"></span><br><span class="line"><span class="attr">slow_query_log</span>=<span class="number">1</span></span><br><span class="line"><span class="attr">slow-query-log-file</span>=/www/server/data/mysql-slow.log</span><br><span class="line"><span class="attr">long_query_time</span>=<span class="number">3</span></span><br><span class="line"><span class="comment">#log_queries_not_using_indexes=on</span></span><br><span class="line"><span class="attr">early-plugin-load</span> = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">innodb_data_home_dir</span> = /www/server/data</span><br><span class="line"><span class="attr">innodb_data_file_path</span> = ibdata1:<span class="number">10</span>M:autoextend</span><br><span class="line"><span class="attr">innodb_log_group_home_dir</span> = /www/server/data</span><br><span class="line"><span class="attr">innodb_buffer_pool_size</span> = <span class="number">256</span>M</span><br><span class="line"><span class="attr">innodb_log_file_size</span> = <span class="number">512</span>M</span><br><span class="line"><span class="attr">innodb_log_buffer_size</span> = <span class="number">16</span>M</span><br><span class="line"><span class="attr">innodb_flush_log_at_trx_commit</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">innodb_lock_wait_timeout</span> = <span class="number">50</span></span><br><span class="line"><span class="attr">innodb_max_dirty_pages_pct</span> = <span class="number">90</span></span><br><span class="line"><span class="attr">innodb_read_io_threads</span> = <span class="number">2</span></span><br><span class="line"><span class="attr">innodb_write_io_threads</span> = <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="section">[mysqldump]</span></span><br><span class="line">quick</span><br><span class="line"><span class="attr">max_allowed_packet</span> = <span class="number">500</span>M</span><br><span class="line"></span><br><span class="line"><span class="section">[mysql]</span></span><br><span class="line">no-auto-rehash</span><br><span class="line"></span><br><span class="line"><span class="section">[myisamchk]</span></span><br><span class="line"><span class="attr">key_buffer_size</span> = <span class="number">32</span>M</span><br><span class="line"><span class="attr">sort_buffer_size</span> = <span class="number">768</span>K</span><br><span class="line"><span class="attr">read_buffer</span> = <span class="number">2</span>M</span><br><span class="line"><span class="attr">write_buffer</span> = <span class="number">2</span>M</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqlhotcopy]</span></span><br><span class="line">interactive-timeout</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    
+  </div>
+
+  
+  <!-- Post Copyright -->
+
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span>原文作者: </span>
+    <a href="https://homleening.github.io">Homlee</a>
+  </p>
+  <p class="copyright-item">
+    <span>原文链接: </span>
+    <a href="https://homleening.github.io/2026/06/20260617-%E6%8A%80%E6%9C%AF-MySql%E4%B8%BB%E4%BB%8E%E5%A4%87%E4%BB%BD%E6%88%96%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB/">https://homleening.github.io/2026/06/20260617-%E6%8A%80%E6%9C%AF-MySql%E4%B8%BB%E4%BB%8E%E5%A4%87%E4%BB%BD%E6%88%96%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB/</a>
+  </p>
+  <p class="copyright-item">
+    <span>许可协议: </span>
+    
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+  </p>
+</div>
+
+    
+
+  
+
+  
+  <footer class="post-footer">
+    
+    <div class="post-tags">
+      
+      <a href="/tags/BT%E9%9D%A2%E6%9D%BF/">BT面板</a>
+      
+      <a href="/tags/MySql/">MySql</a>
+      
+    </div>
+    
+      
+  <nav class="post-nav">  
+      
+      
+      <a class="next" href="/2026/06/20260511-%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0-Github%E5%8F%8C%E4%BB%93%E5%BA%93%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/">  
+        <span class="next-text nav-default">Hexo 双仓库 GitHub Actions 自动化部署踩坑记录</span>  
+        <span class="prev-text nav-mobile">下一篇</span>  
+        <i class="iconfont icon-right"></i>  
+      </a>  
+      
+  </nav>  
+  
+
+  </footer>
+  
+
+</article>
+        </div>
+          
+  <div class="comments" id="comments">  
+      
+  </div>  
+  
+
+      </div>
+    </main>
+    <footer id="footer" class="footer">
+      <!-- Social Links -->
+
+<div class="social-links">
+  
+  
+  
+  
+  <a target="_blank" rel="noopener" href="https://github.com/homleening" class="iconfont icon-github" title="github"></a>
+  
+  
+  
+  
+  
+  
+  <a target="_blank" rel="noopener" href="https://zhihu.com/people/homlee-ning" class="iconfont icon-zhihu" title="zhihu"></a>
+  
+  
+  
+  
+  
+  
+  <a target="_blank" rel="noopener" href="https://www.facebook.com/homlee.ning" class="iconfont icon-facebook" title="facebook"></a>
+  
+  
+  
+  
+  
+  
+  <a target="_blank" rel="noopener" href="https://x.com/homleening" class="iconfont icon-twitter" title="twitter"></a>
+  
+  
+  
+
+  
+  
+  <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+  
+</div>
+
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+  <span class="division">|</span>
+  <span class="hosting-info">
+    footer.hosting
+  </span>
+
+  <span class="copyright-year">
+    <span>
+      
+      &copy;
+      
+      2025 - 2026      
+    </span>
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+
+    <span class="author">Homlee</span>
+  </span>
+
+</div>
+    </footer>
+    <div class="back-to-top" id="back-to-top"> <i class="iconfont icon-up"></i> </div>
+  </div>
+    
+    
+    
+    
+    
+    
+    
+  
+
+  
+
+
+
+
+
+
+
+<script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+
+
+
+<script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+
+
+
+<script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/even.js?v=3.0.0"></script>
+</body>
+
+</html>
